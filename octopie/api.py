@@ -81,14 +81,14 @@ def _http_call(url, method, auth, *args, **kwargs):
                if method == _HTTP_GET else url
 
     try:
-        result = requests.get(http_url,
+        r = requests.get(http_url,
                 headers={'accept': 'application/vnd.github.preview'})
     except requests.exceptions.ConnectionError as e:
         raise APIError('ConnectionError', 'ConnectionError', 'ConnectionError',
                        http_url, e)
 
     try:
-        result = json.loads(result.text)
+        result = r.json()
     except ValueError as e:
         raise APIError('ValueError', result.text, 'ValueError', http_url, e)
 
@@ -100,7 +100,7 @@ def _http_call(url, method, auth, *args, **kwargs):
             raise APIError('Rate limit exceeded' , result['message'],
                 'Rate limit exceeded', http_url)
 
-    return result
+    return r
 
 class GitHubAPI(object):
 
